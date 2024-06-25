@@ -50,6 +50,8 @@ def extract_text(folder_path):
       texts.append(read_txt(filepath))
     elif filename.endswith('.pptx'):
       texts.append(read_pptx(filepath))
+    
+    texts.append("\n\n")
 
   return " ".join(texts)
 
@@ -63,7 +65,7 @@ def main():
               )
   chunks = splitter.split_text(text=combined_text)
   
-  embeddings = SpacyEmbeddings(use_gpu=True)
+  embeddings = SpacyEmbeddings()
   
   VectorStore = FAISS.from_texts(chunks, embedding=embeddings)
   
@@ -81,6 +83,8 @@ def main():
   
   while True:
     query = input("Question: ")
+    
+    query = f"{query} - Anda harus menjawab dalam bahasa Indonesia"
     
     start_time = time.time()
     docs = VectorStore.similarity_search(query=query, k=5)
